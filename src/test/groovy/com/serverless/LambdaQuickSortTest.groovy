@@ -8,8 +8,8 @@ class LambdaQuickSortTest extends spock.lang.Specification {
         given:
         int[] input = [423, 5467, 93, 23, 5, 1321]
         when:
-        def result = new LambdaQuickSort().quickSort(input, 0, input.length - 1)
+        new LambdaQuickSort().quickSort(input, 0, input.length - 1)
         then:
-        input == [5, 23, 93, 423, 5467, 13212]
+        input == [5, 23, 93, 423, 5467, 1321]
     }
 }
