@@ -7,6 +7,8 @@
 .classpath
 target
 .idea
+/.idea
+/.idea/
 
 # Package Files
 *.jar
@@ -15,3 +17,5 @@ target
 
 # Serverless directories
 .serverless
+
+.idea/*
