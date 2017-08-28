@@ -1,49 +1,59 @@
 package com.serverless;
 
 /**
- * Created by czarek on 25.08.17.
+ * Sets up the application - much faster than spring in serverless
  */
 public class UglyApplicationContext {
 
-    private static UglyApplicationContext instance;
-
-    private LambdaQuickSort lambdaQuickSort = new LambdaQuickSort();
+    private static UglyApplicationContext instance = new UglyApplicationContext();
 
     private ArgumentParser argumentParser = new ArgumentParser();
 
-    private LambdaInvoker lambdaInvoker = new LambdaInvoker();
-    ;
+    private LambdaInvoker lambdaInvoker = new RemoteLambdaInvoker(argumentParser);
 
-    private UglyApplicationContext() {
-        init();
+    private LocalLambdaInvoker localLambdaInvoker = new LocalLambdaInvoker(argumentParser);
+
+    private LambdaQuickSort lambdaQuickSort = new LambdaQuickSort(lambdaInvoker);
+
+    private LambdaQuickSort localQuickSort = new LambdaQuickSort(localLambdaInvoker);
+
+    private Handler handler = new Handler();
+
+    private String functionName;
+
+    private String functionVersion;
+
+
+    public static String getFunctionName() {
+        return instance.functionName;
     }
 
-    static UglyApplicationContext getInstance() {
-        if (instance == null) {
-            synchronized (UglyApplicationContext.class) {
-                if (instance == null) {
-                    instance = new UglyApplicationContext();
-                }
-            }
-        }
-        return instance;
+    public static void setFunctionName(String functionName) {
+        instance.functionName = functionName;
     }
 
-    private void init() {
-        this.argumentParser = new ArgumentParser();
+    public static String getFunctionVersion() {
+        return instance.functionVersion;
     }
 
-    public LambdaQuickSort getLambdaQuickSort() {
-        return lambdaQuickSort;
+    public static void setFunctionVersion(String functionVersion) {
+        instance.functionVersion = functionVersion;
     }
 
-    public ArgumentParser getArgumentParser() {
-        return argumentParser;
+    public static LambdaQuickSort getLambdaQuickSort() {
+        return instance.lambdaQuickSort;
     }
 
-    public LambdaInvoker getLambdaInvoker() {
-        return lambdaInvoker;
+    public static ArgumentParser getArgumentParser() {
+        return instance.argumentParser;
     }
 
+    public static Handler getHandler() {
+        return instance.handler;
+    }
+
+    public static LambdaQuickSort getLocalQuickSort() {
+        return instance.localQuickSort;
+    }
 
 }

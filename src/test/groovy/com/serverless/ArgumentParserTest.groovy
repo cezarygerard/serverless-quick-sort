@@ -20,7 +20,7 @@ class ArgumentParserTest extends Specification {
         result == arrayToParse
     }
 
-    def "Parses json array as String"() {
+    def "Parses String representation of json"() {
         given:
         String arrayToParse = '[1,5,3,23432,6]'
 
@@ -31,7 +31,7 @@ class ArgumentParserTest extends Specification {
         result == [1, 5, 3, 23432, 6]
     }
 
-    def "Parses empty json array as String"() {
+    def "Parses empty String representation of json"() {
         given:
         String arrayToParse = '[]'
 
@@ -40,5 +40,16 @@ class ArgumentParserTest extends Specification {
 
         then:
         result == new int[0]
+    }
+
+    def "Parses List<Integer>"() {
+        given:
+        List<Integer> input = [1, 5, 3, 23432, 6]
+
+        when:
+        def result = parser.parseInput(input)
+
+        then:
+        result == [1, 5, 3, 23432, 6] as int[]
     }
 }

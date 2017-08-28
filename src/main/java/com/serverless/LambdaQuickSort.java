@@ -2,27 +2,47 @@ package com.serverless;
 
 import java.util.Arrays;
 
-/**
- * Created by czarek on 23.08.17.
- */
 public class LambdaQuickSort {
+
+    private LambdaInvoker lambda;
+
+    public LambdaQuickSort(LambdaInvoker lambdaInvoker) {
+        this.lambda = lambdaInvoker;
+    }
 
     public int[] sort(int[] input) {
 
-        boolean sortDidSth = quickSortStep(input);
+        if (anyThingToSort(input)) {
 
-        if (sortDidSth) {
+            input = Arrays.copyOfRange(input, 0, input.length);
 
-            int[] lowerPart = Arrays.copyOfRange(input, 0, pivotalIndex(input));
-            int[] upperPart = Arrays.copyOfRange(input, pivotalIndex(input), input.length - 1);
+            executeQuickSortStep(input);
 
-            int[] lowerPartSorted = lambda().invokeRecursive(lowerPart);
-            int[] upperPartSorted = lambda().invokeRecursive(upperPart);
+            int[] lowerPart = getLowerHalfOf(input);
+            int[] upperPart = getUpperHalfOf(input);
+
+            int[] lowerPartSorted = lambda.invokeRecursive(lowerPart);
+            int[] upperPartSorted = lambda.invokeRecursive(upperPart);
 
             return concat(lowerPartSorted, upperPartSorted);
         }
 
         return input;
+    }
+
+    private int[] getLowerHalfOf(int[] input) {
+        return Arrays.copyOfRange(input, 0, pivotalIndex(input));
+    }
+
+    private int[] getUpperHalfOf(int[] input) {
+        return Arrays.copyOfRange(input, pivotalIndex(input), input.length);
+    }
+
+    private boolean anyThingToSort(int[] input) {
+        int lowerIndex = 0;
+        int upperIndex = input.length - 1;
+
+        return lowerIndex < upperIndex;
     }
 
     private int[] concat(int[] lower, int[] upper) {
@@ -36,10 +56,10 @@ public class LambdaQuickSort {
     }
 
     private int pivotalIndex(int[] input) {
-        return (input.length - 1) / 2;
+        return (input.length) / 2;
     }
 
-    private boolean quickSortStep(int[] input) {
+    private boolean executeQuickSortStep(int[] input) {
         int lowerIndex = 0;
         int upperIndex = input.length - 1;
 
@@ -70,41 +90,6 @@ public class LambdaQuickSort {
         return true;
     }
 
-    private LambdaInvoker lambda() {
-        return UglyApplicationContext.getInstance().getLambdaInvoker();
-    }
-
-
-//    //just the reference implementation:
-//    void quickSort(int[] input, int lowerIndex, int upperIndex) {
-//        if (lowerIndex == upperIndex) {
-//            return;
-//        }
-//
-//        int pivotalIndex = (lowerIndex + upperIndex) / 2;
-//        int pivotValue = input[pivotalIndex];
-//
-//        int i = lowerIndex;
-//        int j = upperIndex;
-//
-//        while (i < j) {
-//
-//            while (input[i] < pivotValue) {
-//                i++;
-//            }
-//
-//            while (input[j] > pivotValue) {
-//                j--;
-//            }
-//
-//            swap(input, i, j);
-//            i++;
-//            j--;
-//        }
-//
-//        quickSort(input, lowerIndex, pivotalIndex);
-//        quickSort(input, pivotalIndex + 1, upperIndex);
-//    }
 
     private void swap(int[] input, int i, int j) {
         int temp = input[i];

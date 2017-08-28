@@ -9,6 +9,10 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 
+
+/**
+ * this is copied from serverless examples
+ */
 public class ApiGatewayResponse {
 
     private final int statusCode;

@@ -1,6 +1,9 @@
 package com.serverless;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by czarek on 25.08.17.
@@ -11,7 +14,19 @@ public class ArgumentParser {
         if (inputArray instanceof String) {
             return parseString(((String) inputArray));
         }
+        if (inputArray instanceof List) {
+            return parseArrayList((List<Integer>) inputArray);
+
+        }
         return (int[]) inputArray;
+    }
+
+    private int[] parseArrayList(List<Integer> inputArray) {
+        int[] retVal = new int[inputArray.size()];
+        for (int i = 0; i < inputArray.size(); i++) {
+            retVal[i] = (inputArray.get(i)).intValue();
+        }
+        return retVal;
     }
 
     private int[] parseString(String inputArray) {
@@ -33,5 +48,16 @@ public class ArgumentParser {
         return new int[0];
 
 
+    }
+
+    public int[] parseByteBufferInput(ByteBuffer buffer) {
+        byte[] bytes;
+        if (buffer.hasArray()) {
+            bytes = buffer.array();
+        } else {
+            bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+        }
+        return parseInput(new String(bytes, Charset.forName("UTF-8")));
     }
 }
